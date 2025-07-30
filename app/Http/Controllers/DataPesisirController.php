@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Http\Controllers;
 
 use App\Models\DataPesisir;
@@ -16,11 +15,12 @@ class DataPesisirController extends Controller
     public function addNew(Request $request)
     {
         $addPesisir = DataPesisir::create([
-            'nama' => $request->nama,
-            'alamat' => $request->alamat,
-            'kabupaten' => $request->kabupaten,
-            'latitude' => $request->latitude,
-            'longitude' => $request->longitude,
+            'nama'       => $request->nama,
+            'alamat'     => $request->alamat,
+            'kabupaten'  => $request->kabupaten,
+            'latitude'   => $request->latitude,
+            'longitude'  => $request->longitude,
+            'keterangan' => '',
         ]);
         $addPesisir->save();
 
@@ -33,13 +33,14 @@ class DataPesisirController extends Controller
 
     public function processUpdate(Request $request, $id)
     {
-        $id = base64_decode($id);
+        $id      = base64_decode($id);
         $process = DataPesisir::findOrFail($id)->update([
-            'nama' => $request->nama,
-            'alamat' => $request->alamat,
-            'kabupaten' => $request->kabupaten,
-            'latitude' => $request->latitude,
-            'longitude' => $request->longitude,
+            'nama'       => $request->nama,
+            'alamat'     => $request->alamat,
+            'kabupaten'  => $request->kabupaten,
+            'latitude'   => $request->latitude,
+            'longitude'  => $request->longitude,
+            'keterangan' => '',
         ]);
         if ($process) {
             return redirect('/data-pesisir')->with("successUpdate", "Data updated successfully");
