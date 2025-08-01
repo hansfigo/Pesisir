@@ -79,7 +79,11 @@ class DataHasilUjiController extends Controller
     public function processAddHasil(Request $request, $id)
     {
         $id = base64_decode($id);
+
+        // Menghapus data sampel uji yang ada untuk menghindari duplikasi
         SampelUji::where(['id_uji'=>$id])->delete();
+
+        // Proses penyimpanan hasil uji
         $i = 1;
         foreach ($request->input('hasil') as $row => $val) {
             foreach($request->id_parameter[$row] as $key => $isi) {
