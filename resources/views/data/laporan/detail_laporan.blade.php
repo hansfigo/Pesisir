@@ -1,5 +1,4 @@
 @include('layout.header')
-<!-- Wrapper Start -->
 <div class="wrapper">
     @include('layout.sidebar')
     @include('layout.topnav')
@@ -45,6 +44,7 @@
                                     </tbody>
                                 </table>
                             </div>
+                            
                             <h5 class="mb-3">Nilai CWQI</h5>
                             <div class="table-responsive">
                                 <table class="table table-striped table-bordered">
@@ -65,13 +65,14 @@
 
                                                 @foreach ($sample as $sampleIndex)
                                                     @php
-                                                        $displayValue =
-                                                            $paramData['sample_data'][$sampleIndex]['wiqi'] ?? 0;
+                                                        // Ambil nilai Wi*Qi dari data yang sudah diproses oleh service class
+                                                        $displayValue = $paramData['sample_data'][$sampleIndex]['wiqi'] ?? 0;
                                                     @endphp
                                                     <td>{{ number_format($displayValue, 5, ',', ' ') }}</td>
                                                 @endforeach
                                             </tr>
                                         @endforeach
+                                        
                                         <tr>
                                             <td class="table-warning">WQIA</td>
                                             <td class="table-secondary">Jumlah</td>
@@ -81,6 +82,7 @@
                                                 </td>
                                             @endforeach
                                         </tr>
+                                        
                                         <tr>
                                             <td class="table-warning">WQIAU</td>
                                             <td class="table-secondary">Jumlah</td>
@@ -93,6 +95,7 @@
                                     </tbody>
                                 </table>
                             </div>
+                            
                             <div class="row my-3">
                                 <div class="col-2">Min = {{ number_format($biotaStats['min'], 2, ',', ' ') }}</div>
                                 <div class="col-2">Mean = {{ number_format($biotaStats['mean'], 2, ',', ' ') }}</div>
@@ -106,14 +109,14 @@
                                         <b>{{ number_format($biotaStats['min'], 2, ',', ' ') }} -
                                             {{ number_format($biotaStats['max'], 2, ',', ' ') }}</b>, sehingga dapat
                                         dikatakan kualitas air pesisir
-                                        untuk biota laut berada pada tingkat yang <b> {{ $biotaStats['status'] }}
-                                        </b> pada tahun
+                                        untuk biota laut berada pada tingkat yang <b> {{ $biotaStats['status'] }} </b> pada tahun
                                         {{ $data->first()->get_year->tahun }}.
                                     </p>
                                 </div>
                             </div>
                             <hr>
                         </div>
+                        
                         <div class="card-body">
                             <h5 class="mb-3">Golongan Parameter : Wisata Bahari</h5>
                             <div class="table-responsive">
@@ -144,6 +147,7 @@
                                     </tbody>
                                 </table>
                             </div>
+                            
                             <h5 class="mb-3">Nilai CWQI</h5>
                             <div class="table-responsive">
                                 <table class="table table-striped table-bordered">
@@ -154,11 +158,6 @@
                                             @foreach ($sample as $isi)
                                                 <th>Wi*Qi-{{ $isi }}</th>
                                             @endforeach
-                                            {{-- <th>Wi*Qi-2</th>
-                                            <th>Wi*Qi-3</th>
-                                            <th>Wi*Qi-4</th>
-                                            <th>Wi*Qi-5</th>
-                                            <th>Wi*Qi-6</th> --}}
                                         </tr>
                                     </thead>
                                     <tbody class="text-center">
@@ -169,13 +168,14 @@
 
                                                 @foreach ($sample as $sampleIndex)
                                                     @php
-                                                        $displayValue =
-                                                            $paramData['sample_data'][$sampleIndex]['wiqi'] ?? 0;
+                                                        // Ambil nilai Wi*Qi dari data yang sudah diproses oleh service class
+                                                        $displayValue = $paramData['sample_data'][$sampleIndex]['wiqi'] ?? 0;
                                                     @endphp
                                                     <td>{{ number_format($displayValue, 5, ',', ' ') }}</td>
                                                 @endforeach
                                             </tr>
                                         @endforeach
+                                        
                                         <tr>
                                             <td class="table-warning">WQIA</td>
                                             <td class="table-secondary">Jumlah</td>
@@ -185,6 +185,7 @@
                                                 </td>
                                             @endforeach
                                         </tr>
+                                        
                                         <tr>
                                             <td class="table-warning">WQIAU</td>
                                             <td class="table-secondary">Jumlah</td>
@@ -197,6 +198,7 @@
                                     </tbody>
                                 </table>
                             </div>
+                            
                             <div class="row my-3">
                                 <div class="col-2">Min = {{ number_format($wisataStats['min'], 2, ',', ' ') }}</div>
                                 <div class="col-2">Mean = {{ number_format($wisataStats['mean'], 2, ',', ' ') }}</div>
@@ -223,15 +225,11 @@
             </div>
         </div>
     </div>
-
 </div>
-<!-- Wrapper End-->
 @include('layout.footer')
 
-<!-- Backend Bundle JavaScript -->
 @include('layout.script')
 
-<!-- Add alert -->
 @if (session('successAdd'))
     <script>
         swal({
@@ -274,8 +272,6 @@
             });
     </script>
 @endif
-<!-- /Alert -->
-
 </body>
 
 </html>
