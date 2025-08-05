@@ -40,13 +40,14 @@
 @include('layout-landing.script')
 <script>
     let map, markers = [];
+
     function initMap() {
         map = L.map('map', {
             center: {
-                lat: 28.626137,
-                lng: 79.821603,
+                lat: -7.7956, // Ganti dengan koordinat yang valid (contoh: Yogyakarta)
+                lng: 110.3695,
             },
-            zoom: 15
+            zoom: 10
         });
 
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -61,16 +62,36 @@
 
     /* --------------------------- Initialize Markers --------------------------- */
     function initMarkers() {
-        const initialMarkers = @php echo json_encode($initialMarkers) @endphp
-
+        const initialMarkers = @php echo json_encode($initialMarkers) @endphp;
+        const validMarkers = [];
+        
+        // Loop pertama untuk memfilter data yang valid
         for (let index = 0; index < initialMarkers.length; index++) {
-
             const data = initialMarkers[index];
+            const lat = data.position.lat;
+            const lng = data.position.lng;
+            
+            // Pengecekan apakah lat dan lng itu angka
+            if (!isNaN(parseFloat(lat)) && isFinite(lat) && !isNaN(parseFloat(lng)) && isFinite(lng)) {
+                validMarkers.push(data);
+            } else {
+                console.error('Data marker tidak valid, dilewati:', data.title, data.position);
+            }
+        }
+        
+        // Sekarang, kita pakai data yang udah valid aja
+        for (let index = 0; index < validMarkers.length; index++) {
+            const data = validMarkers[index];
             const marker = generateMarker(data, index);
         
-            marker.addTo(map).bindPopup(`<b>${data.title}<br>Status Air : ${data.status_air}</b>`).openPopup();
-            map.panTo(data.position);
-            // marker.push(marker)
+            marker.addTo(map).bindPopup(`<b>${data.title}<br>Status Air : ${data.status_air}</b>`);
+            markers.push(marker); 
+        }
+
+        // Atur view map agar mencakup semua marker
+        if (markers.length > 0) {
+            const group = new L.featureGroup(markers);
+            map.fitBounds(group.getBounds());
         }
     }
     

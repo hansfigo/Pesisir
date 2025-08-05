@@ -18,4 +18,9 @@ class DataParameter extends Model
     {
         return $this->belongsTo(Parameter::class, 'id_parameter', 'id');
     }
+    
+    public function parameter()
+    {
+        return $this->belongsTo(Parameter::class, 'id_parameter', 'id');
+    }
 }

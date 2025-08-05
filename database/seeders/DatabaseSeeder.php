@@ -22,7 +22,8 @@ class DatabaseSeeder extends Seeder
             DataParameterSeeder::class,
             DataUjiSeeder::class,
             LaporanSeeder::class,
-            FungsiYSeeder::class
+            FungsiYSeeder::class,
+            UpdatedDataParameterSeeder::class,
         ]);
     }
 }

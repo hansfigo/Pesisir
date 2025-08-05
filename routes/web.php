@@ -1,40 +1,95 @@
 <?php
 
+use App\Http\Controllers\Auth\LoginController;
+use App\Http\Controllers\Auth\RegisterController;
+use App\Http\Controllers\BiotaLautController;
+use App\Http\Controllers\DataHasilUjiController;
+use App\Http\Controllers\DataLaporanController;
+use App\Http\Controllers\DataParameterController;
+use App\Http\Controllers\DataPesisirController;
+use App\Http\Controllers\HomeController;
+use App\Http\Controllers\KurvaParameterController;
+use App\Http\Controllers\WisataBahariController;
+use App\Models\DataUji;
+use App\Services\CWQICalculationService;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\HomeController;
-use App\Http\Controllers\BiotaLautController;
-use App\Http\Controllers\Auth\LoginController;
-use App\Http\Controllers\DataLaporanController;
-use App\Http\Controllers\DataPesisirController;
-use App\Http\Controllers\DataHasilUjiController;
-use App\Http\Controllers\WisataBahariController;
-use App\Http\Controllers\Auth\RegisterController;
-use App\Http\Controllers\DataParameterController;
-use App\Http\Controllers\KurvaParameterController;
-use App\Models\DataUji;
+
+$cwqiService = app(CWQICalculationService::class);
 
 Route::get('/', function () {
     return view('landing');
 });
 
-Route::get('peta', function () {
-    $model = DataUji::all();
-    $initialMarkers = [];
-    foreach($model as $isi) {
-        $initialMarkers[] = 
-            [
-                'position' => [
-                    'lat' => $isi->pulau->latitude,
-                    'lng' => $isi->pulau->longitude
-                ],
-                'draggable' => false,
-                'title' => $isi->pulau->nama,
-                'status_air' => statusAir($isi),
-            ];
-    };
+// Route::get('peta', function () {
+//     $model = DataUji::all();
+//     $initialMarkers = [];
+//     foreach($model as $isi) {
+//         $initialMarkers[] =
+//             [
+//                 'position' => [
+//                     'lat' => $isi->pulau->latitude,
+//                     'lng' => $isi->pulau->longitude
+//                 ],
+//                 'draggable' => false,
+//                 'title' => $isi->pulau->nama,
+//                 'status_air' => statusAir($isi),
+//             ];
+//     };
 
-    return view('peta',compact('initialMarkers'));
+//     return view('peta',compact('initialMarkers'));
+// });
+
+Route::get('peta', function () use ($cwqiService) {
+    // Ambil semua data uji dengan relasi yang dibutuhkan
+    // Eager loading relasi biar lebih efisien
+    $ujiData = DataUji::with(['pulau', 'sample.param', 'sample.get_data'])->get();
+
+    $initialMarkers = [];
+
+    foreach ($ujiData as $pengujian) {
+        // Ambil data parameter dan sampel yang dibutuhkan
+        $parameterValues = [];
+        $sampleIndices   = [];
+
+        foreach ($pengujian->sample as $isi) {
+            $parameterValues[$isi->param->jenis][$isi->id_parameter][$isi->uji_ke] = $isi->hasil;
+            if (! in_array($isi->uji_ke, $sampleIndices)) {
+                $sampleIndices[] = $isi->uji_ke;
+            }
+        }
+        sort($sampleIndices); // Urutkan indeks sampel
+
+        // Panggil service class untuk menghitung CWQI
+        // Asumsi jenisnya 'biota'
+        $cwqiResults = $cwqiService->calculateCWQI(
+            $pengujian->sample, // data laporan
+            $sampleIndices,     // array indeks sampel
+            $parameterValues,   // nilai-nilai parameter per sampel
+            'biota'
+        );
+
+        // Ambil nilai WQIA untuk menentukan status
+        $wqiaValues = array_values($cwqiResults['WQIA']);
+
+        // Hitung statistik (min, mean, max)
+        $statistics = $cwqiService->calculateStatistics($wqiaValues);
+        $meanWQI    = $statistics['mean'];
+        $maxWQI     = $statistics['max'];
+        
+
+        $initialMarkers[] = [
+            'position'   => [
+                'lat' => $pengujian->pulau->latitude,
+                'lng' => $pengujian->pulau->longitude,
+            ],
+            'draggable'  => false,
+            'title'      => $pengujian->pulau->nama,
+            'status_air' => $cwqiService->getStatus($maxWQI),
+        ];
+    }
+
+    return view('peta', compact('initialMarkers'));
 });
 
 // LOGIN

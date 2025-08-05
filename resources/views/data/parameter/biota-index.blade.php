@@ -25,6 +25,8 @@
                                             <th>Satuan</th>
                                             <th>Baku Mutu</th>
                                             <th>Nilai Standar Value</th>
+                                            <th>Koefisien A</th>
+                                            <th>Koefisien B</th>
                                             <th>Edit</th>
                                         </tr>
                                     </thead>
@@ -49,6 +51,8 @@
                                             <td class="text-center">{{ $parameter->satuan }}</td>
                                             <td class="text-center">{{ $parameter->baku_mutu }}</td>
                                             <td class="text-center">{{ $parameter->nilai }}</td>
+                                            <td class="text-center">{{ $parameter->coefficient_a }}</td>
+                                            <td class="text-center">{{ $parameter->coefficient_b }}</td>
                                             <td>
                                                 <a class="iq-icons-list m-0 text-left" href="" title="Edit"
                                                     data-toggle="modal" data-target="#edit{{ $id }}">

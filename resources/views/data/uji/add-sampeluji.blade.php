@@ -53,7 +53,7 @@
                                                             value="{{ $data->hasil }}" required>
                                                     </div>
                                                     <div class="col-3 m-auto">
-                                                        <label for="">{{ $data->get_data->satuan }}</label>
+                                                        <label for="">{{ $data->get_data ? $data->get_data->satuan : 'N/A' }}</label>
                                                     </div>
                                                 </div>
                                             @endif
@@ -77,7 +77,7 @@
                                                             value="{{ $data->hasil }}" required>
                                                     </div>
                                                     <div class="col-3 m-auto">
-                                                        <label for="">{{ $data->get_data->satuan }}</label>
+                                                        <label for="">{{ $data->get_data ? $data->get_data->satuan : 'N/A' }}</label>
                                                     </div>
                                                 </div>
                                             @endif
@@ -139,7 +139,7 @@
                                                 required>
                                         </div>
                                         <div class="col-3 m-auto">
-                                            <label for="">{{ $data->get_data->satuan }}</label>
+                                            <label for="">{{ $data->get_data ? $data->get_data->satuan : 'N/A' }}</label>
                                         </div>
                                     </div>
                                 @endif
@@ -163,7 +163,7 @@
                                                 value="{{ $data->hasil }}" required>
                                         </div>
                                         <div class="col-3 m-auto">
-                                            <label for="">{{ $data->get_data->satuan }}</label>
+                                            <label for="">{{ $data->get_data ? $data->get_data->satuan : 'N/A' }}</label>
                                         </div>
                                     </div>
                                 @endif
